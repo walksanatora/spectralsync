@@ -1,0 +1,44 @@
+{
+  "type": "pastel:pedestal",
+  "time": 300,
+  "tier": "advanced",
+  "colors": {
+    "pastel:cyan": 1,
+    "pastel:magenta": 1,
+    "pastel:yellow": 1,
+    "pastel:black": 1
+  },
+  "experience": 2.0,
+  "pattern": [
+    "KxC",
+    "KBM",
+    "KxY"
+  ],
+  "key": {
+    "x": "minecraft:paper",
+    "C": "pastel:topaz_shard",
+    "M": "minecraft:amethyst_shard",
+    "Y": "pastel:citrine_shard",
+    "K": "pastel:onyx_shard",
+    "B": "minecraft:writable_book"
+  },
+  "result": {
+    "id": "spectral-sync:syncbook",
+    "count": 1
+  },
+  "required_advancement": "pastel:craft_onyx_pedestal",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "pastel"
+      ]
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "pastel"
+    }
+  ]
+}

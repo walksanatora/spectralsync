@@ -1,0 +1,44 @@
+{
+  "type": "spectrum:pedestal",
+  "time": 300,
+  "tier": "advanced",
+  "colors": {
+    "spectrum:cyan": 1,
+    "spectrum:magenta": 1,
+    "spectrum:yellow": 1,
+    "spectrum:black": 1
+  },
+  "experience": 2.0,
+  "pattern": [
+    "KxC",
+    "KBM",
+    "KxY"
+  ],
+  "key": {
+      "x": "minecraft:paper",
+      "C": "spectrum:topaz_shard",
+      "M": "minecraft:amethyst_shard",
+      "Y": "spectrum:citrine_shard",
+      "K": "spectrum:onyx_shard",
+      "B": "minecraft:writable_book"
+  },
+  "result": {
+    "id": "spectral-sync:syncbook",
+    "count": 1
+  },
+  "required_advancement": "spectrum:craft_onyx_pedestal",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "spectrum"
+      ]
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "spectrum"
+    }
+  ]
+}

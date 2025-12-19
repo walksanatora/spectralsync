@@ -1,20 +1,14 @@
 package net.walksanator.spectralsync
 
-import de.dafuqs.spectrum.SpectrumCommon
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
-import net.minecraft.nbt.StringTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResult
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
-import kotlin.jvm.optionals.getOrNull
 
 class SyncBook(properties: Properties) : Item(properties) {
     override fun use(
@@ -29,27 +23,21 @@ class SyncBook(properties: Properties) : Item(properties) {
         level as ServerLevel
         player as ServerPlayer
 
-        if (stack.tag == null) {
-            stack.tag = CompoundTag()
-        }
-
         val adv = player.advancements
         val srvAdv  = level.server.advancements
-        val tag = stack.tag?.getList("advancements", StringTag.TAG_STRING.toInt())
-        if ( (tag?.size?: 0) == 0 || player.isShiftKeyDown) {
-            val advStrs = srvAdv.allAdvancements.filter {
+        val comp = stack.get(SpectralSync.SYNC_COMPONENT)
+        if ( (comp?.size?: 0) == 0 || player.isShiftKeyDown) {
+            val advs = srvAdv.allAdvancements.filter {
                 val prog = adv.getOrStartProgress(it)
-                prog.isDone && it.id.namespace == SpectrumCommon.MOD_ID
-            }.map {it.id.toString()}
-            val list = ListTag()
-            advStrs.forEach {
-                list.add(StringTag.valueOf(it))
-            }
-            stack.tag?.put("advancements",list)
+                prog.isDone &&
+                        // I should probally cache a set of every advancment ID so it doesn't iterate EVERY advancement on right-click
+                        // but I am lazy so servers suffer.
+                        (it.id.namespace == "spectrum" || it.id.namespace == "pastel")
+            }.map {it.id}
+            stack.set(SpectralSync.SYNC_COMPONENT, advs.toMutableList())
         } else {
-            tag!!.map { (it as StringTag).asString }
-                .mapNotNull { ResourceLocation.read(it).result().getOrNull() }
-                .mapNotNull {srvAdv.getAdvancement(it)}
+            comp!!
+                .mapNotNull { srvAdv.get(it) }
                 .forEach {
                     val prog = adv.getOrStartProgress(it)
                     prog.remainingCriteria.forEach { crit ->
@@ -62,7 +50,7 @@ class SyncBook(properties: Properties) : Item(properties) {
     }
 
     override fun isFoil(itemStack: ItemStack): Boolean {
-        val tag = itemStack.tag?.getList("advancements", StringTag.TAG_STRING.toInt())?.size?: 0
+        val tag = itemStack.get<MutableList<*>>(SpectralSync.SYNC_COMPONENT)?.size?: 0
         return tag > 0
     }
 }
